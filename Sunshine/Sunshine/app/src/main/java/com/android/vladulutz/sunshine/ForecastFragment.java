@@ -1,5 +1,6 @@
 package com.android.vladulutz.sunshine;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -84,7 +86,14 @@ public class ForecastFragment extends Fragment {
         ListView lista = (ListView) rootView.findViewById(R.id.listview_forecast);
         lista.setAdapter(mForecastAdapter);
 
-
+        lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String forecast = mForecastAdapter.getItem(position);
+                Intent intent = new Intent(getActivity(), DetailActivity.class).putExtra(Intent.EXTRA_TEXT, forecast);
+                startActivity(intent);
+            }
+        });
 
         return rootView;
     }
@@ -146,9 +155,6 @@ public class ForecastFragment extends Fragment {
                 resultStrs[i] = day + " - " + description + " - " + highAndLow;
             }
 
-            for (String s : resultStrs) {
-                Log.v(LOG_TAG, "Forecast entry: " + s);
-            }
             return resultStrs;
 
         }
@@ -192,7 +198,6 @@ public class ForecastFragment extends Fragment {
 
                     URL url = new URL(builtUri.toString());
 
-                    Log.v(LOG_TAG, "Built URI " + builtUri.toString());
                     /*String baseUrl = "http://api.openweathermap.org/data/2.5/forecast/daily?q=94043&mode=json&units=metric&cnt=7";
                     String apiKey = "&APPID=" + BuildConfig.OPEN_WEATHER_MAP_API_KEY;
                     URL url = new URL(baseUrl.concat(apiKey));*/
@@ -224,8 +229,6 @@ public class ForecastFragment extends Fragment {
                         return null;
                     }
                     forecastJsonStr = buffer.toString();
-
-                    Log.v(LOG_TAG, "Forecast JSON string: " + forecastJsonStr);
 
                     //////////////////////////////////////////////////////////
 
