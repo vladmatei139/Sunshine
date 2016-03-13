@@ -1,7 +1,10 @@
 package com.android.vladulutz.sunshine;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -36,6 +39,15 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+
+    public void showMap(Uri geoLocation) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(geoLocation);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -47,6 +59,16 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             startActivity(new Intent(this,SettingsActivity.class));
             return true;
+        }
+
+        if (id == R.id.action_show_location) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            final String BASE_URL = "geo:0,0?";
+            final String QUERY_PARAM = "q";
+            Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                    .appendQueryParameter(QUERY_PARAM, prefs.getString(getString(R.string.pref_location_key),getString(R.string.pref_location_default)))
+                    .build();
+            showMap(builtUri);
         }
 
         return super.onOptionsItemSelected(item);
