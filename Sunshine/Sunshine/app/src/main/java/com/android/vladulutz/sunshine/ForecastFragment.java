@@ -1,9 +1,11 @@
 package com.android.vladulutz.sunshine;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,10 +30,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -41,6 +41,13 @@ public class ForecastFragment extends Fragment {
     ArrayAdapter<String> mForecastAdapter;
 
     public ForecastFragment() {
+    }
+
+    private void updateWeather(){
+        FetchWeatherTask weatherTask = new FetchWeatherTask();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String location = prefs.getString(getString(R.string.pref_location_key),getString(R.string.pref_location_default));
+        weatherTask.execute(location);
     }
 
     @Override
@@ -58,29 +65,23 @@ public class ForecastFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
         if(id == R.id.action_refresh) {
-            FetchWeatherTask weatherTask = new FetchWeatherTask();
-            weatherTask.execute("Bucharest");
+            updateWeather();
             return true;
             }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
+    public void onStart(){
+        super.onStart();
+        updateWeather();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        String[] forecastArray ={
-                "Mon",
-                "Tue",
-                "Wed",
-                "Thu",
-                "Fri",
-                "Sat",
-                "Sun"
-        };
 
-        List<String> weekForecast = new ArrayList<String>(Arrays.asList(forecastArray));
-
-        mForecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
+        mForecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, new ArrayList<String>());
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         ListView lista = (ListView) rootView.findViewById(R.id.listview_forecast);
