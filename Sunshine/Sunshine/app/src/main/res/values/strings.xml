@@ -7,4 +7,7 @@
     <string name="pref_location_label">Location</string>
     <string name="pref_location_key" translatable="false">location</string>
     <string name="pref_location_default" translatable="false">Bucharest</string>
+    <string name="pref_temperature_key" translatable="false">temperature</string>
+    <string name="pref_temperature_label">Temperature Units</string>
+    <string name="pref_temperature_default" translatable="false">metric</string>
 </resources>
