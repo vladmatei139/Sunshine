@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.sunshine.app.data;
+package com.android.vladulutz.sunshine.data;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -28,7 +28,7 @@ public class TestDb extends AndroidTestCase {
 
     // Since we want each test to start with a clean slate
     void deleteTheDatabase() {
-        mContext.deleteDatabase(com.example.android.sunshine.app.data.WeatherDbHelper.DATABASE_NAME);
+        mContext.deleteDatabase(com.android.vladulutz.sunshine.data.WeatherDbHelper.DATABASE_NAME);
     }
 
     /*
@@ -53,11 +53,11 @@ public class TestDb extends AndroidTestCase {
         // Note that there will be another table in the DB that stores the
         // Android metadata (db version information)
         final HashSet<String> tableNameHashSet = new HashSet<String>();
-        tableNameHashSet.add(com.example.android.sunshine.app.data.WeatherContract.LocationEntry.TABLE_NAME);
-        tableNameHashSet.add(com.example.android.sunshine.app.data.WeatherContract.WeatherEntry.TABLE_NAME);
+        tableNameHashSet.add(com.android.vladulutz.sunshine.data.WeatherContract.LocationEntry.TABLE_NAME);
+        tableNameHashSet.add(com.android.vladulutz.sunshine.data.WeatherContract.WeatherEntry.TABLE_NAME);
 
-        mContext.deleteDatabase(com.example.android.sunshine.app.data.WeatherDbHelper.DATABASE_NAME);
-        SQLiteDatabase db = new com.example.android.sunshine.app.data.WeatherDbHelper(
+        mContext.deleteDatabase(com.android.vladulutz.sunshine.data.WeatherDbHelper.DATABASE_NAME);
+        SQLiteDatabase db = new com.android.vladulutz.sunshine.data.WeatherDbHelper(
                 this.mContext).getWritableDatabase();
         assertEquals(true, db.isOpen());
 
@@ -78,7 +78,7 @@ public class TestDb extends AndroidTestCase {
                 tableNameHashSet.isEmpty());
 
         // now, do our tables contain the correct columns?
-        c = db.rawQuery("PRAGMA table_info(" + com.example.android.sunshine.app.data.WeatherContract.LocationEntry.TABLE_NAME + ")",
+        c = db.rawQuery("PRAGMA table_info(" + com.android.vladulutz.sunshine.data.WeatherContract.LocationEntry.TABLE_NAME + ")",
                 null);
 
         assertTrue("Error: This means that we were unable to query the database for table information.",
@@ -86,11 +86,11 @@ public class TestDb extends AndroidTestCase {
 
         // Build a HashSet of all of the column names we want to look for
         final HashSet<String> locationColumnHashSet = new HashSet<String>();
-        locationColumnHashSet.add(com.example.android.sunshine.app.data.WeatherContract.LocationEntry._ID);
-        locationColumnHashSet.add(com.example.android.sunshine.app.data.WeatherContract.LocationEntry.COLUMN_CITY_NAME);
-        locationColumnHashSet.add(com.example.android.sunshine.app.data.WeatherContract.LocationEntry.COLUMN_COORD_LAT);
-        locationColumnHashSet.add(com.example.android.sunshine.app.data.WeatherContract.LocationEntry.COLUMN_COORD_LONG);
-        locationColumnHashSet.add(com.example.android.sunshine.app.data.WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING);
+        locationColumnHashSet.add(com.android.vladulutz.sunshine.data.WeatherContract.LocationEntry._ID);
+        locationColumnHashSet.add(com.android.vladulutz.sunshine.data.WeatherContract.LocationEntry.COLUMN_CITY_NAME);
+        locationColumnHashSet.add(com.android.vladulutz.sunshine.data.WeatherContract.LocationEntry.COLUMN_COORD_LAT);
+        locationColumnHashSet.add(com.android.vladulutz.sunshine.data.WeatherContract.LocationEntry.COLUMN_COORD_LONG);
+        locationColumnHashSet.add(com.android.vladulutz.sunshine.data.WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING);
 
         int columnNameIndex = c.getColumnIndex("name");
         do {
@@ -138,20 +138,20 @@ public class TestDb extends AndroidTestCase {
         // First step: Get reference to writable database
         // If there's an error in those massive SQL table creation Strings,
         // errors will be thrown here when you try to get a writable database.
-        com.example.android.sunshine.app.data.WeatherDbHelper dbHelper = new com.example.android.sunshine.app.data.WeatherDbHelper(mContext);
+        com.android.vladulutz.sunshine.data.WeatherDbHelper dbHelper = new com.android.vladulutz.sunshine.data.WeatherDbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         // Second Step (Weather): Create weather values
-        ContentValues weatherValues = com.example.android.sunshine.app.data.TestUtilities.createWeatherValues(locationRowId);
+        ContentValues weatherValues = com.android.vladulutz.sunshine.data.TestUtilities.createWeatherValues(locationRowId);
 
         // Third Step (Weather): Insert ContentValues into database and get a row ID back
-        long weatherRowId = db.insert(com.example.android.sunshine.app.data.WeatherContract.WeatherEntry.TABLE_NAME, null, weatherValues);
+        long weatherRowId = db.insert(com.android.vladulutz.sunshine.data.WeatherContract.WeatherEntry.TABLE_NAME, null, weatherValues);
         assertTrue(weatherRowId != -1);
 
         // Fourth Step: Query the database and receive a Cursor back
         // A cursor is your primary interface to the query results.
         Cursor weatherCursor = db.query(
-                com.example.android.sunshine.app.data.WeatherContract.WeatherEntry.TABLE_NAME,  // Table to Query
+                com.android.vladulutz.sunshine.data.WeatherContract.WeatherEntry.TABLE_NAME,  // Table to Query
                 null, // leaving "columns" null just returns all the columns.
                 null, // cols for "where" clause
                 null, // values for "where" clause
@@ -164,7 +164,7 @@ public class TestDb extends AndroidTestCase {
         assertTrue( "Error: No Records returned from location query", weatherCursor.moveToFirst() );
 
         // Fifth Step: Validate the location Query
-        com.example.android.sunshine.app.data.TestUtilities.validateCurrentRecord("testInsertReadDb weatherEntry failed to validate",
+        com.android.vladulutz.sunshine.data.TestUtilities.validateCurrentRecord("testInsertReadDb weatherEntry failed to validate",
                 weatherCursor, weatherValues);
 
         // Move the cursor to demonstrate that there is only one record in the database
@@ -186,16 +186,16 @@ public class TestDb extends AndroidTestCase {
         // First step: Get reference to writable database
         // If there's an error in those massive SQL table creation Strings,
         // errors will be thrown here when you try to get a writable database.
-        com.example.android.sunshine.app.data.WeatherDbHelper dbHelper = new com.example.android.sunshine.app.data.WeatherDbHelper(mContext);
+        com.android.vladulutz.sunshine.data.WeatherDbHelper dbHelper = new com.android.vladulutz.sunshine.data.WeatherDbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         // Second Step: Create ContentValues of what you want to insert
         // (you can use the createNorthPoleLocationValues if you wish)
-        ContentValues testValues = com.example.android.sunshine.app.data.TestUtilities.createNorthPoleLocationValues();
+        ContentValues testValues = com.android.vladulutz.sunshine.data.TestUtilities.createNorthPoleLocationValues();
 
         // Third Step: Insert ContentValues into database and get a row ID back
         long locationRowId;
-        locationRowId = db.insert(com.example.android.sunshine.app.data.WeatherContract.LocationEntry.TABLE_NAME, null, testValues);
+        locationRowId = db.insert(com.android.vladulutz.sunshine.data.WeatherContract.LocationEntry.TABLE_NAME, null, testValues);
 
         // Verify we got a row back.
         assertTrue(locationRowId != -1);
@@ -206,7 +206,7 @@ public class TestDb extends AndroidTestCase {
         // Fourth Step: Query the database and receive a Cursor back
         // A cursor is your primary interface to the query results.
         Cursor cursor = db.query(
-                com.example.android.sunshine.app.data.WeatherContract.LocationEntry.TABLE_NAME,  // Table to Query
+                com.android.vladulutz.sunshine.data.WeatherContract.LocationEntry.TABLE_NAME,  // Table to Query
                 null, // all columns
                 null, // Columns for the "where" clause
                 null, // Values for the "where" clause
@@ -222,7 +222,7 @@ public class TestDb extends AndroidTestCase {
         // Fifth Step: Validate data in resulting Cursor with the original ContentValues
         // (you can use the validateCurrentRecord function in TestUtilities to validate the
         // query if you like)
-        com.example.android.sunshine.app.data.TestUtilities.validateCurrentRecord("Error: Location Query Validation Failed",
+        com.android.vladulutz.sunshine.data.TestUtilities.validateCurrentRecord("Error: Location Query Validation Failed",
                 cursor, testValues);
 
         // Move the cursor to demonstrate that there is only one record in the database
